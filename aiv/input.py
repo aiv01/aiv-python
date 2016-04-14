@@ -1,0 +1,6 @@
+import glfw
+
+KEY_LEFT=glfw.KEY_LEFT
+KEY_RIGHT=glfw.KEY_RIGHT
+KEY_UP=glfw.KEY_UP
+KEY_DOWN=glfw.KEY_DOWN
