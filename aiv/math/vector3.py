@@ -32,6 +32,13 @@ class Vector3(object):
             return Vector3(self.x * other, self.y * other, self.z * other)
         raise TypeError("only Vectors and numbers can be multiplied")
 
+    def __truediv__(self, other):
+        if isinstance(other, Vector3):
+            return Vector3(self.x / other.x, self.y / other.y, self.z / other.z)
+        if isinstance(other, numbers.Number):
+            return Vector3(self.x / other, self.y / other, self.z / other)
+        raise TypeError("only Vectors and numbers can be divided")
+
     def __eq__(self, other):
         if isinstance(other, Vector3):
             if self.x != other.x:

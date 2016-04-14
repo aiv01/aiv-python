@@ -70,14 +70,7 @@ class ObjLoader(object):
                    self._uvs += tmp_uvs[idx1].tuple
                    self._normals += tmp_normals[idx2].tuple
 
-    @property
-    def vertices(self):
-        return numpy.array(self._vertices, dtype=numpy.float32)
 
-    @property
-    def normals(self):
-        return numpy.array(self._normals, dtype=numpy.float32)
-
-    @property
-    def uvs(self):
-        return numpy.array(self._uvs, dtype=numpy.float32)
+        self.vertices = numpy.array(self._vertices, dtype=numpy.float32)
+        self.normals = numpy.array(self._normals, dtype=numpy.float32)
+        self.uvs = numpy.array(self._uvs, dtype=numpy.float32)

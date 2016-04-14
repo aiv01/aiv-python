@@ -1,9 +1,6 @@
 from aiv.draw import Window
-from aiv.opengl import *
 
 window = Window()
-
-print(glGetString(GL_VERSION))
 
 def clear_screen(window):
     for i in range(0, len(window.texture.pixels)):
@@ -26,4 +23,8 @@ print(window.texture.height)
 while window.is_opened:
     clear_screen(window)
     draw_horizontal_line(window, 10, 30, 200, 255, 0, 0)
+    draw_horizontal_line(window, 10, 60, 200, 0, 255, 255)
+    draw_horizontal_line(window, 10, 90, 200, 255, 0, 255)
+    draw_horizontal_line(window, 10, 500, 500, 255, 255, 0)
+    draw_horizontal_line(window, 100, 550, 200, 255, 255, 255)
     window.blit()

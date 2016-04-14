@@ -12,6 +12,7 @@ class Window(object):
         glfw.swap_interval(1)
         self.time = glfw.get_time()
         self.delta_time = 0
+        self.aspect_ratio = float(width) / float(height)
 
     def update(self):
         glfw.swap_buffers(self.window)
