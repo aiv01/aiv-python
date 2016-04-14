@@ -14,12 +14,15 @@ def put_pixel(window, x, y, r, g, b, a=255):
     window.texture.pixels[pos] = r
     window.texture.pixels[pos+1] = g
     window.texture.pixels[pos+2] = b
-    #window.texture.pixels[pos+3] = r
+    window.texture.pixels[pos+3] = a
 
 def draw_horizontal_line(window, x1, y1, width, r, g, b, a=255):
     for x in range(x1, x1+width):
         put_pixel(window, x, y1, r, g, b, a)
 
+print(len(window.texture.pixels))
+print(window.texture.width)
+print(window.texture.height)
 while window.is_opened:
     clear_screen(window)
     draw_horizontal_line(window, 10, 30, 200, 255, 0, 0)
