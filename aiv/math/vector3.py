@@ -77,3 +77,6 @@ class Vector3(object):
     @property
     def tuple(self):
         return (self.x, self.y, self.z)
+
+    def dot(self, other):
+        return self.x * other.x + self.y * other.y + self.z * other.z

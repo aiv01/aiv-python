@@ -44,9 +44,12 @@ class Vertex(object):
         self.projected.z = self.v.z
 
         self.projected.x = (self.projected.x * window.texture.width / 2.0) + (window.texture.width / 2.0)
-        print(self.projected.y)
         self.projected.y = -(self.projected.y * window.texture.height / 2.0) + (window.texture.height / 2.0)
 
+        # compute lambert
+        light_direction = (Vector3(0.0, 10.0, 0) - self.v).normalized
+        self.lambert = max(light_direction.dot(self.n), 0)
+        print(self.lambert)
 
 class Triangle(object):
     def __init__(self, a, b, c):
@@ -105,19 +108,23 @@ class Triangle(object):
             gradient_right = (y - right_top.projected.y) / (right_bottom.projected.y - right_top.projected.y)
 
         left = left_top.projected.x + (left_bottom.projected.x - left_top.projected.x) * clamp(gradient_left)
-        right = right_top.projected.x + (right_bottom.projected.x - right_top.projected.x) * clamp(gradient_left)
+        right = right_top.projected.x + (right_bottom.projected.x - right_top.projected.x) * clamp(gradient_right)
 
         zstart = left_top.projected.z + (left_bottom.projected.z - left_top.projected.z) * clamp(gradient_left)
-        zend = right_top.projected.z + (right_bottom.projected.z - right_top.projected.z) * clamp(gradient_left)
+        zend = right_top.projected.z + (right_bottom.projected.z - right_top.projected.z) * clamp(gradient_right)
+
+        lstart = left_top.lambert + (left_bottom.lambert - left_top.lambert) * clamp(gradient_left)
+        lend = right_top.lambert + (right_bottom.lambert - right_top.lambert) * clamp(gradient_right)
 
         for x in range(int(left), int(right)):
             if x < 0 or x > window.texture.width-1:
                 continue
             zgradient = (x - left) / (right - left)
             z = zstart + (zend - zstart) * clamp(zgradient)
+            lambert = lstart + (lend - lstart) * clamp(zgradient)
             zpos = y * 640 + x
             if window.zbuffer[zpos] > z:
-                put_pixel(window, x, y, 255, 0, 0)
+                put_pixel(window, x, y, 100 * lambert, 100 * lambert, 100 * lambert)
                 window.zbuffer[zpos] = z
 
 class Mesh(object):

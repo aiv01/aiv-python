@@ -27,3 +27,11 @@ class Window(object):
 
     def get_key(self, key):
         return glfw.get_key(self.window, key) == glfw.PRESS
+
+    @property
+    def width(self):
+        return glfw.get_window_size(self.window)[0]
+
+    @property
+    def height(self):
+        return glfw.get_window_size(self.window)[1]
