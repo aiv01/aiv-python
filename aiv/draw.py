@@ -106,3 +106,7 @@ class Window(window.Window):
 
         glDrawArrays(GL_TRIANGLES, 0, 6)
         self.update()
+
+    @property
+    def pixels(self):
+        return self.texture.pixels

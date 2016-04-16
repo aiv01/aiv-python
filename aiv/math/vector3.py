@@ -80,3 +80,6 @@ class Vector3(object):
 
     def dot(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
+
+    def copy(self):
+        return Vector3(self.x, self.y, self.z)

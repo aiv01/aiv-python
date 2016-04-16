@@ -21,9 +21,9 @@ def clear_screen(win):
         win.zbuffer[i] = float(999999)
 
 def put_pixel(win, x, y, r, g, b, a=255):
-    if x < 0 or x > win.texture.width-1 or y < 0 or y > win.texture.height-1:
+    if x < 0 or x > win.width-1 or y < 0 or y > win.height-1:
         return
-    pos = y * win.texture.width * 4 + x * 4
+    pos = y * win.width * 4 + x * 4
     win.texture.pixels[pos] = r
     win.texture.pixels[pos+1] = g
     win.texture.pixels[pos+2] = b
@@ -35,21 +35,21 @@ class Vertex(object):
         self.n = n
         self.u = u
 
-    def project(self, window, fov):
+    def project(self, window, translate, fov):
         # distance from camera
         d = math.tan(math.radians(fov/2.0))
+        v = self.v + translate
         self.projected = Vector3(0.0, 0.0, 0.0)
-        self.projected.y = self.v.y / (d * self.v.z)
-        self.projected.x = self.v.x / (window.aspect_ratio * d * self.v.z)
-        self.projected.z = self.v.z
+        self.projected.y = v.y / (d * v.z)
+        self.projected.x = v.x / (window.aspect_ratio * d * v.z)
+        self.projected.z = v.z
 
-        self.projected.x = (self.projected.x * window.texture.width / 2.0) + (window.texture.width / 2.0)
-        self.projected.y = -(self.projected.y * window.texture.height / 2.0) + (window.texture.height / 2.0)
+        self.projected.x = (self.projected.x * window.width / 2.0) + (window.width / 2.0)
+        self.projected.y = -(self.projected.y * window.height / 2.0) + (window.height / 2.0)
 
         # compute lambert
-        light_direction = (Vector3(0.0, 10.0, 0) - self.v).normalized
+        light_direction = (Vector3(0.0, 10.0, -3) - self.v).normalized
         self.lambert = max(light_direction.dot(self.n), 0)
-        print(self.lambert)
 
 class Triangle(object):
     def __init__(self, a, b, c):
@@ -58,9 +58,9 @@ class Triangle(object):
         self.c = c
 
     def draw(self, window, fov):
-        self.a.project(window, fov) 
-        self.b.project(window, fov) 
-        self.c.project(window, fov) 
+        self.a.project(window, Vector3(0, -1.5, 5), fov) 
+        self.b.project(window, Vector3(0, -1.5, 5), fov) 
+        self.c.project(window, Vector3(0, -1.5, 5), fov) 
 
         p1 = self.a
         p2 = self.b
@@ -98,7 +98,7 @@ class Triangle(object):
                    self.scanline(window, y, p1, p3, p2, p3)
 
     def scanline(self, window, y, left_top, left_bottom, right_top, right_bottom):
-        if y < 0 or y > window.texture.height-1:
+        if y < 0 or y > window.height-1:
             return
         gradient_left = 1
         gradient_right = 1
@@ -124,7 +124,7 @@ class Triangle(object):
             lambert = lstart + (lend - lstart) * clamp(zgradient)
             zpos = y * 640 + x
             if window.zbuffer[zpos] > z:
-                put_pixel(window, x, y, 100 * lambert, 100 * lambert, 100 * lambert)
+                put_pixel(window, x, y, 100 * lambert * 2, 100 * lambert * 2, 100 * lambert * 2)
                 window.zbuffer[zpos] = z
 
 class Mesh(object):
@@ -133,16 +133,17 @@ class Mesh(object):
     def __init__(self, obj):
         self.triangles = []
         for index in range(0, len(obj.vertices), 9):
-            v = Vector3(obj.vertices[index], obj.vertices[index+1]-1.5, obj.vertices[index+2]*-1-4)
-            n = Vector3(obj.normals[index], obj.normals[index+1]-1.5, obj.normals[index+2]*-1-4)
+
+            v = Vector3(obj.vertices[index], obj.vertices[index+1], obj.vertices[index+2]*-1)
+            n = Vector3(obj.normals[index], obj.normals[index+1], obj.normals[index+2]*-1)
             a = Vertex(v, n, None)
 
-            v = Vector3(obj.vertices[index+3], obj.vertices[index+4]-1.5, obj.vertices[index+5]*-1-4)
-            n = Vector3(obj.normals[index+3], obj.normals[index+4]-1.5, obj.normals[index+5]*-1-4)
+            v = Vector3(obj.vertices[index+3], obj.vertices[index+4], obj.vertices[index+5]*-1)
+            n = Vector3(obj.normals[index+3], obj.normals[index+4], obj.normals[index+5]*-1)
             b = Vertex(v, n, None)
 
-            v = Vector3(obj.vertices[index+6], obj.vertices[index+7]-1.5, obj.vertices[index+8]*-1-4)
-            n = Vector3(obj.normals[index+6], obj.normals[index+7]-1.5, obj.normals[index+8]*-1-4)
+            v = Vector3(obj.vertices[index+6], obj.vertices[index+7], obj.vertices[index+8]*-1)
+            n = Vector3(obj.normals[index+6], obj.normals[index+7], obj.normals[index+8]*-1)
             c = Vertex(v, n, None)
 
 
