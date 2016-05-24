@@ -100,7 +100,7 @@ class EnemySpawner(object):
         # add the boss to the list of enemies for allowing
         # it t be checked by the collision system
         self.enemies.append(self.boss)
-        self.frequency = 0.75
+        self.frequency = 1
         # counter for managing the spawn time
         self.t = 0
         # this is incresed at every enemy spawn
@@ -115,7 +115,7 @@ class EnemySpawner(object):
             return
 
         # check for boss
-        if self.spawns % 30 == 0:
+        if self.spawns > 0 and self.spawns % 30 == 0:
             # the boss is till on the stage
             # wait a bit
             if self.boss.enabled:
